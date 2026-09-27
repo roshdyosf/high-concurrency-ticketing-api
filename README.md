@@ -2,7 +2,7 @@
 
 A high-performance RESTful API for event ticket booking, built to handle high-concurrency bookings with **zero race conditions**.
 
-Supports a hybrid seating model (specific seats *or* general admission), adjacent-seat auto-suggestion, Redis-based atomic seat locking, Stripe payments with webhook-driven confirmation, dynamic QR-code ticket generation, an organizer-managed refund workflow, event-scoped gatekeepers, and full admin moderation.
+Supports a hybrid seating model (specific seats _or_ general admission), adjacent-seat auto-suggestion, Redis-based atomic seat locking, Stripe payments with webhook-driven confirmation, dynamic QR-code ticket generation, an organizer-managed refund workflow, event-scoped gatekeepers, and full admin moderation.
 
 📄 **Full technical reference:** see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the complete database schema, API endpoints, concurrency design, and business rules.
 
@@ -22,24 +22,24 @@ Supports a hybrid seating model (specific seats *or* general admission), adjacen
 
 ## Tech Stack
 
-| Component | Version |
-|---|---|
-| Framework | Laravel 13 |
-| Language | PHP 8.5 |
-| Database | PostgreSQL 17 |
-| Cache / Locking | Redis 7.x |
-| Auth | Laravel Sanctum |
-| Payments | Stripe API |
-| Media Storage | Cloudinary |
-| Email | Laravel Mail + Mailpit (dev) |
-| API Docs | OpenAPI 3.0 via Scramble |
+| Component       | Version                      |
+| --------------- | ---------------------------- |
+| Framework       | Laravel 13                   |
+| Language        | PHP 8.5                      |
+| Database        | PostgreSQL 17                |
+| Cache / Locking | Redis 7.x                    |
+| Auth            | Laravel Sanctum              |
+| Payments        | Stripe API                   |
+| Media Storage   | Cloudinary                   |
+| Email           | Laravel Mail + Mailpit (dev) |
+| API Docs        | OpenAPI 3.0 via Scramble     |
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full reasoning behind each choice.
 
 ## Getting Started
 
 ```bash
-git clone https://github.com/<your-username>/high-concurrency-ticketing-api.git
+git clone https://github.com/roshdyosf/high-concurrency-ticketing-api.git
 cd high-concurrency-ticketing-api
 
 composer install
