@@ -1,0 +1,99 @@
+services:
+    # 1. Laravel Application
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: ticketing_app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - .:/var/www
+        ports:
+            - "8000:8000"
+        networks:
+            - ticketing_network
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+
+    # 2. Laravel Scheduler
+    scheduler:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: ticketing_scheduler
+        restart: unless-stopped
+        working_dir: /var/www
+        command: php artisan schedule:work
+        volumes:
+            - .:/var/www
+        networks:
+            - ticketing_network
+        depends_on:
+            - app
+
+    # 3. PostgreSQL Database
+    postgres:
+        image: postgres:17
+        container_name: ticketing_postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_DATABASE:-ticketing_db}
+            POSTGRES_USER: ${DB_USERNAME:-postgres}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - ticketing_network
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-ticketing_db}",
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    # 4. Redis Store
+    redis:
+        image: redis:7-alpine
+        container_name: ticketing_redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - ticketing_network
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    # 5. Mailpit Service
+    mailpit:
+        image: axllent/mailpit:latest
+        container_name: ticketing_mailpit
+        restart: unless-stopped
+        ports:
+            - "8025:8025"
+            - "1025:1025"
+        networks:
+            - ticketing_network
+
+networks:
+    ticketing_network:
+        driver: bridge
+
+volumes:
+    postgres_data:
+        driver: local
+    redis_data:
+        driver: local
