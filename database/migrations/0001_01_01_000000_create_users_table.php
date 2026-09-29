@@ -14,9 +14,13 @@ return new class () extends Migration {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->enum('role', ['admin', 'organizer', 'customer', 'gatekeeper']);
+            $table->boolean('is_approved')->default(true);
+            $table->boolean('is_banned')->default(false);
+            $table->text('ban_reason')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->timestamp('banned_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
 
