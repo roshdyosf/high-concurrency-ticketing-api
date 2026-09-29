@@ -49,4 +49,9 @@ class Event extends Model
     {
         return $this->hasMany(DiscountCode::class);
     }
+
+    public function gatekeeperAssignments(): HasMany
+    {
+        return $this->hasMany(EventGatekeeper::class);
+    }
 }

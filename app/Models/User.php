@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(RefundRequest::class, 'reviewed_by');
     }
+
+    public function gatekeeperAssignments(): HasMany
+    {
+        return $this->hasMany(EventGatekeeper::class, 'user_id');
+    }
 }
