@@ -34,7 +34,7 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Seat::class);
     }
-    
+
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
