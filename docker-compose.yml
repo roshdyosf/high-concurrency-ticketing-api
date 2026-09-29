@@ -1,5 +1,4 @@
 services:
-    # 1. Laravel Application
     app:
         build:
             context: .
@@ -7,6 +6,9 @@ services:
         container_name: ticketing_app
         restart: unless-stopped
         working_dir: /var/www
+        command: php artisan serve --host=0.0.0.0 --port=8000
+        environment:
+            PHP_CLI_SERVER_WORKERS: 4
         volumes:
             - .:/var/www
         ports:
@@ -19,7 +21,6 @@ services:
             redis:
                 condition: service_healthy
 
-    # 2. Laravel Scheduler
     scheduler:
         build:
             context: .
@@ -33,9 +34,11 @@ services:
         networks:
             - ticketing_network
         depends_on:
-            - app
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
 
-    # 3. PostgreSQL Database
     postgres:
         image: postgres:17
         container_name: ticketing_postgres
@@ -60,7 +63,6 @@ services:
             timeout: 5s
             retries: 5
 
-    # 4. Redis Store
     redis:
         image: redis:7-alpine
         container_name: ticketing_redis
@@ -77,7 +79,6 @@ services:
             timeout: 5s
             retries: 5
 
-    # 5. Mailpit Service
     mailpit:
         image: axllent/mailpit:latest
         container_name: ticketing_mailpit
@@ -94,6 +95,4 @@ networks:
 
 volumes:
     postgres_data:
-        driver: local
     redis_data:
-        driver: local
