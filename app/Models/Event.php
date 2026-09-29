@@ -39,8 +39,14 @@ class Event extends Model
     {
         return $this->hasMany(TicketTier::class);
     }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function discountCodes(): HasMany
+    {
+        return $this->hasMany(DiscountCode::class);
     }
 }
