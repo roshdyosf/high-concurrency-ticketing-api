@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'customer_id');
     }
+
+    public function scannedTickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'scanned_by');
+    }
 }
