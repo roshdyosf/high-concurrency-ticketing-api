@@ -36,4 +36,9 @@ class TicketTier extends Model
     {
         return $this->hasMany(Seat::class);
     }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }
