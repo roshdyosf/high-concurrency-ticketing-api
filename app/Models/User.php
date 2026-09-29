@@ -51,4 +51,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class, 'scanned_by');
     }
+    public function refundRequests(): HasMany
+    {
+        return $this->hasMany(RefundRequest::class, 'customer_id');
+    }
+
+    public function reviewedRefundRequests(): HasMany
+    {
+        return $this->hasMany(RefundRequest::class, 'reviewed_by');
+    }
 }
