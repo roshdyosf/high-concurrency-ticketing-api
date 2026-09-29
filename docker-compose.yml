@@ -88,7 +88,19 @@ services:
             - "1025:1025"
         networks:
             - ticketing_network
-
+    stripe-cli:
+        image: stripe/stripe-cli:latest
+        container_name: ticketing_stripe_cli
+        profiles: ["stripe"]
+        command: >
+            listen
+            --api-key ${STRIPE_SECRET}
+            --events payment_intent.succeeded,payment_intent.payment_failed,charge.refunded,refund.updated
+            --forward-to http://app:8000/api/v1/webhooks/stripe
+        networks:
+            - ticketing_network
+        depends_on:
+            - app
 networks:
     ticketing_network:
         driver: bridge
