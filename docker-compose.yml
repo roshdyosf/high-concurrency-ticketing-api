@@ -67,6 +67,8 @@ services:
         image: redis:7-alpine
         container_name: ticketing_redis
         restart: unless-stopped
+        command:
+            ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
         ports:
             - "6379:6379"
         volumes:
@@ -95,7 +97,7 @@ services:
         command: >
             listen
             --api-key ${STRIPE_SECRET}
-            --events payment_intent.succeeded,payment_intent.payment_failed,charge.refunded,refund.updated
+            --events payment_intent.succeeded,payment_intent.payment_failed,charge.refunded
             --forward-to http://app:8000/api/v1/webhooks/stripe
         networks:
             - ticketing_network
