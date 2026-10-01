@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 
-class RegisterController extends Controller
+class AuthController extends Controller
 {
-    public function __invoke(RegisterRequest $request): JsonResponse
+    public function __construct(private readonly AuthService $authService)
     {
-        $user = new User($request->validated());
-        $user->role = UserRole::Customer;
-        $user->is_approved = true;
-        $user->save();
+    }
 
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $user = $this->authService->register($request->validated());
         return (new UserResource($user))
             ->response()
             ->setStatusCode(201);
     }
+
 }
