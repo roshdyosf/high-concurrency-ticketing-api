@@ -18,8 +18,11 @@ class Order extends Model
     {
         return [
             'status' => OrderStatus::class,
+            'subtotal' => 'decimal:2',
+            'discount_amount' => 'decimal:2',
             'total_amount' => 'decimal:2',
             'expires_at' => 'datetime',
+            'paid_at' => 'datetime',
         ];
     }
 
@@ -31,6 +34,11 @@ class Order extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function discountCode(): BelongsTo
+    {
+        return $this->belongsTo(DiscountCode::class);
     }
 
     public function items(): HasMany

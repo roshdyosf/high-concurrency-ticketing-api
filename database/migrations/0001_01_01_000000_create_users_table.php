@@ -14,8 +14,10 @@ return new class () extends Migration {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('role', ['admin', 'organizer', 'customer', 'gatekeeper']);
+            $table->enum('role', ['admin', 'organizer', 'customer', 'gatekeeper'])->default('customer');
             $table->boolean('is_approved')->default(true);
+            $table->text('organizer_rejection_reason')->nullable();
+            $table->timestamp('organizer_reviewed_at')->nullable();
             $table->boolean('is_banned')->default(false);
             $table->text('ban_reason')->nullable();
             $table->string('password');

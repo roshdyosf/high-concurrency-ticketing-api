@@ -34,6 +34,7 @@ class User extends Authenticatable
             'is_approved' => 'boolean',
             'is_banned' => 'boolean',
             'banned_at' => 'datetime',
+            'organizer_reviewed_at' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];

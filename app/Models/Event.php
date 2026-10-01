@@ -18,6 +18,7 @@ class Event extends Model
         'venue_name',
         'location',
         'event_date',
+        'end_date',
         'image_url',
         'image_public_id',
     ];
@@ -26,6 +27,7 @@ class Event extends Model
     {
         return [
             'event_date' => 'datetime',
+            'end_date' => 'datetime',
             'status' => EventStatus::class,
         ];
     }

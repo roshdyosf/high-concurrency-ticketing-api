@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class () extends Migration {
     /**
@@ -18,12 +19,16 @@ return new class () extends Migration {
             $table->string('venue_name');
             $table->string('location');
             $table->timestamp('event_date');
+            $table->timestamp('end_date');
             $table->string('image_url')->nullable();
             $table->string('image_public_id')->nullable();
             $table->enum('status', ['draft', 'published', 'completed', 'cancelled', 'suspended'])
                 ->default('draft');
             $table->timestamps();
         });
+        DB::statement(
+            'ALTER TABLE events ADD CONSTRAINT events_end_after_start CHECK (end_date > event_date)'
+        );
     }
 
     /**

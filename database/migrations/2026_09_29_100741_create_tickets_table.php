@@ -13,7 +13,7 @@ return new class () extends Migration {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_item_id')->constrained('order_items');
-            $table->string('ticket_code')->unique();
+            $table->char('ticket_code', 64)->unique();
             $table->enum('status', ['active', 'used', 'cancelled', 'refunded'])
                 ->default('active');
             $table->timestamp('scanned_at')->nullable();
