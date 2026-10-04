@@ -19,9 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 | Request::HEADER_X_FORWARDED_PORT
                 | Request::HEADER_X_FORWARDED_PROTO,
         );
+        $middleware->redirectGuestsTo(fn() => null);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+            fn(Request $request, Throwable $e) => $request->is('api/*') || $request->expectsJson()
         );
     })->create();
