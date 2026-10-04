@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Services;
-
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use App\Exceptions\AccountBannedException;
 use App\Enums\UserRole;
 use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
@@ -43,5 +43,14 @@ class AuthService
             'token' => $token,
             'user' => $user,
         ];
+    }
+
+    public function logout(User $user): void
+    {
+        $token = $user->currentAccessToken();
+
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
     }
 }
