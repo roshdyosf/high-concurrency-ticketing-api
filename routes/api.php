@@ -9,10 +9,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::get('ping', fn () => response()->json(['pong' => true]));
+    Route::get('ping', fn() => response()->json(['pong' => true]));
 
     Route::post('auth/register', [AuthController::class, 'register']);
     Route::post('auth/login', [AuthController::class, 'login']);
 
-    Route::middleware('auth:sanctum')->get('auth-test', fn (Request $request) => $request->user());
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('auth/me', [AuthController::class, 'me']);
+        Route::post('auth/logout', [AuthController::class, 'logout']);
+    });
+    Route::middleware('auth:sanctum')->get('auth-test', fn(Request $request) => $request->user());
 });
