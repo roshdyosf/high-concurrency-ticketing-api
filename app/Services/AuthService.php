@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
+use App\Exceptions\AccountBannedException;
 use App\Enums\UserRole;
 use App\Models\User;
 
@@ -18,5 +21,27 @@ class AuthService
         $user->save();
 
         return $user;
+    }
+    /**
+     * @return array{token: string, user: User}
+     */
+    public function login(string $email, string $password): array
+    {
+        $user = User::where('email', $email)->first();
+        if (!$user || !Hash::check($password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        if ($user->is_banned) {
+            throw new AccountBannedException();
+        }
+
+        $token = $user->createToken('auth')->plainTextToken;
+        return [
+            'token' => $token,
+            'user' => $user,
+        ];
     }
 }
