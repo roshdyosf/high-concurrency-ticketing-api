@@ -1,7 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +13,9 @@ use Tests\TestCase;
 |
 */
 
-pest()->extend(TestCase::class)
- // ->use(RefreshDatabase::class)
+pest()->extend(Tests\TestCase::class)
+    ->use(DatabaseTruncation::class)
     ->in('Feature');
-
 /*
 |--------------------------------------------------------------------------
 | Expectations
