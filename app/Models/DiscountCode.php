@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use App\Enums\DiscountType;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DiscountCode extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'code',
         'discount_type',
@@ -31,7 +28,9 @@ class DiscountCode extends Model
             'is_active' => 'boolean',
         ];
     }
-
+    /**
+     * @return BelongsTo<Event, $this>
+     */
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
