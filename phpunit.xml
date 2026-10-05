@@ -25,12 +25,12 @@
         <env name="DB_CONNECTION" value="pgsql"/>
         <env name="DB_HOST" value="postgres"/>
         <env name="DB_PORT" value="5432"/>
-        <env name="DB_DATABASE" value="ticketing_test"/>
+        <env name="DB_DATABASE" value="ticketing_test" force="true"/>
         <env name="DB_USERNAME" value="postgres"/>
         <env name="DB_PASSWORD" value="secret"/>
         <env name="REDIS_HOST" value="redis"/>
-        <env name="REDIS_DB" value="10"/>
-        <env name="REDIS_CACHE_DB" value="11"/>
+        <env name="REDIS_DB" value="10" force="true"/>
+        <env name="REDIS_CACHE_DB" value="11" force="true"/>
         <env name="CACHE_STORE" value="redis"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
