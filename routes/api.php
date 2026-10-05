@@ -22,5 +22,11 @@ Route::prefix('v1')->group(function () {
         Route::get('auth/me', [AuthController::class, 'me']);
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::post('auth/email/verification-notification', [EmailVerificationController::class, 'send']);
+
+
+        //test routes for role middleware
+        Route::get('_t/admin', fn() => ['ok' => 'admin'])->middleware('role:admin');
+        Route::get('_t/organizer', fn() => ['ok' => 'organizer'])->middleware('role:organizer');
+        Route::get('_t/customer', fn() => ['ok' => 'customer'])->middleware('role:customer');
     });
 });
