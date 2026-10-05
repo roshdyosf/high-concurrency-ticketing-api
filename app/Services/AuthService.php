@@ -8,6 +8,7 @@ use App\Exceptions\AccountBannedException;
 use App\Enums\UserRole;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\TransientToken;
 
 class AuthService
 {
@@ -48,6 +49,7 @@ class AuthService
 
     public function logout(User $user): void
     {
+        /** @var PersonalAccessToken|TransientToken|null $token */
         $token = $user->currentAccessToken();
 
         if ($token instanceof PersonalAccessToken) {

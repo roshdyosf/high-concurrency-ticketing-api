@@ -19,7 +19,10 @@ class RegisterRequest extends FormRequest
             $this->merge(['email' => Str::lower(trim($this->email))]);
         }
     }
-
+    
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public function rules(): array
     {
         return [
