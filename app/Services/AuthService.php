@@ -22,6 +22,8 @@ class AuthService
         $user->is_approved = true;
         $user->save();
 
+        $user->sendEmailVerificationNotification();
+
         return $user;
     }
     /**
