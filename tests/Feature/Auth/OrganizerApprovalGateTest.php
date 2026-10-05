@@ -60,7 +60,7 @@ it('lets an unapproved organizer log in', function () {
     $this->postJson('/api/v1/auth/login', [
         'email' => 'pending@test.local',
         'password' => 'Password123',
-    ])->assertOk()->assertJsonStructure(['token', 'token_type', 'user']);
+    ])->assertOk()->assertJsonStructure(['data' => ['token', 'token_type', 'user']]);
 });
 
 it('keeps customer-level routes available to an unapproved organizer', function () {
