@@ -13,9 +13,15 @@ Route::prefix('v1')->group(function () {
         ->middleware('signed')
         ->name('verification.verify');
 
+    Route::post('auth/forgot-password', [PasswordResetController::class, 'forgot']);
+    Route::post('auth/reset-password', [PasswordResetController::class, 'reset']);
+
+    //authenticated users only
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('auth/me', [AuthController::class, 'me']);
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::post('auth/email/verification-notification', [EmailVerificationController::class, 'send']);
     });
+
+
 });
