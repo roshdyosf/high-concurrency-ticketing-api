@@ -13,9 +13,7 @@ use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
-    public function __construct(private readonly AuthService $authService)
-    {
-    }
+    public function __construct(private readonly AuthService $authService) {}
 
     public function me(Request $request): UserResource
     {
@@ -25,6 +23,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = $this->authService->register($request->validated());
+        $user->sendEmailVerificationNotification();
         return (new UserResource($user))
             ->response()
             ->setStatusCode(201);
