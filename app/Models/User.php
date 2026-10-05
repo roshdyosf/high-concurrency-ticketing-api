@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\UserRole;
 
-
 /**
  * @property UserRole $role
  */
