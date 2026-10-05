@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 
 class EmailVerificationController extends Controller
 {
-    public function __construct(private readonly EmailVerificationService $emailVerification,) {}
+    public function __construct(private readonly EmailVerificationService $emailVerification)
+    {
+    }
 
 
     public function send(Request $request): JsonResponse

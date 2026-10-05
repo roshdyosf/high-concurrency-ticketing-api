@@ -12,7 +12,7 @@ class EmailVerificationService
     public function sendNotification(User $user): void
     {
         if ($user->hasVerifiedEmail()) {
-            throw new EmailAlreadyVerifiedException;
+            throw new EmailAlreadyVerifiedException();
         }
 
         $user->sendEmailVerificationNotification();
@@ -23,7 +23,7 @@ class EmailVerificationService
         $user = User::findOrFail($id);
 
         if (! hash_equals(sha1($user->getEmailForVerification()), $hash)) {
-            throw new InvalidVerificationLinkException;
+            throw new InvalidVerificationLinkException();
         }
 
         if ($user->hasVerifiedEmail()) {
