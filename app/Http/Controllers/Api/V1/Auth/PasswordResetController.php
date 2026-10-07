@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Services\PasswordResetService;
 use Illuminate\Http\JsonResponse;
 
@@ -12,8 +12,7 @@ class PasswordResetController extends Controller
 {
     public function __construct(
         private readonly PasswordResetService $passwordReset,
-    ) {
-    }
+    ) {}
 
     public function forgot(ForgotPasswordRequest $request): JsonResponse
     {
