@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTruncation;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +14,8 @@ use Illuminate\Foundation\Testing\DatabaseTruncation;
 */
 
 pest()->extend(Tests\TestCase::class)
-    ->use(DatabaseTruncation::class)
+    ->use(Illuminate\Foundation\Testing\DatabaseTruncation::class)
+    ->beforeEach(fn () => Cache::flush())
     ->in('Feature');
 /*
 |--------------------------------------------------------------------------
