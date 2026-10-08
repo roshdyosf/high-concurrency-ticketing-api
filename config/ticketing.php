@@ -18,4 +18,9 @@ return [
     'currencies' => [
         'USD' => ['minor_unit_factor' => 100, 'min_charge' => '0.50'],
     ],
+
+    'admin' => [
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
 ];
