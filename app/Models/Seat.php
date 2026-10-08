@@ -6,9 +6,14 @@ use App\Enums\SeatStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\SeatFactory;
 
 class Seat extends Model
 {
+    /** @use HasFactory<SeatFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'row_label',
         'seat_number',

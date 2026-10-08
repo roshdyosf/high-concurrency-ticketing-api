@@ -6,9 +6,14 @@ use App\Enums\EventStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\EventFactory;
 
 class Event extends Model
 {
+    /** @use HasFactory<EventFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'title',
         'description',
