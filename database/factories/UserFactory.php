@@ -31,4 +31,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+    public function organizer(bool $approved = true): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Organizer,
+            'is_approved' => $approved,
+        ]);
+    }
 }
