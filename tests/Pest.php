@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +16,16 @@ use Illuminate\Support\Facades\Cache;
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\DatabaseTruncation::class)
-    ->beforeEach(fn () => Cache::flush())
+    ->beforeEach(function () {
+        abort_unless(
+            (int) config('database.redis.default.database') === 10,
+            500,
+            'Refusing to flush a Redis DB that is not the test DB (10).',
+        );
+
+        Cache::flush();
+        Redis::flushdb();
+    })
     ->in('Feature');
 /*
 |--------------------------------------------------------------------------
