@@ -23,4 +23,5 @@ return [
         'email' => env('ADMIN_EMAIL'),
         'password' => env('ADMIN_PASSWORD'),
     ],
+    'contiguous_max_groups' => 3,
 ];
