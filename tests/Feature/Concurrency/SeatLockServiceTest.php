@@ -3,11 +3,6 @@
 use App\Services\SeatLockService;
 use Illuminate\Support\Facades\Redis;
 
-beforeEach(function () {
-    // Feature tests flush only the cache connection; seat_hold keys live on the default one (DB 10 in tests).
-    Redis::flushdb();
-});
-
 it('locks every seat with the holder token and the ttl', function () {
     $locked = app(SeatLockService::class)->lock([1, 2, 3], 'token-a', 600);
 
