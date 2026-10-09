@@ -6,9 +6,15 @@ use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 class Order extends Model
 {
+    /** @use HasFactory<OrderFactory> */
+    use HasFactory;
     protected $fillable = [];
 
     protected function casts(): array
@@ -21,6 +27,29 @@ class Order extends Model
             'expires_at' => 'datetime',
             'paid_at' => 'datetime',
         ];
+    }
+
+    public static function holdExpiresAt(): Carbon
+    {
+        return now()->addSeconds((int) config('ticketing.hold_ttl'));
+    }
+
+    /**
+     * @param  Builder<Order>  $query
+     * @return Builder<Order>
+     */
+    public function scopeActiveHolds(Builder $query): Builder
+    {
+        return $query->where('status', OrderStatus::Pending)->where('expires_at', '>', now());
+    }
+
+    /**
+     * @param  Builder<Order>  $query
+     * @return Builder<Order>
+     */
+    public function scopeExpiredHolds(Builder $query): Builder
+    {
+        return $query->where('status', OrderStatus::Pending)->where('expires_at', '<=', now());
     }
     /**
      * @return BelongsTo<User, $this>
