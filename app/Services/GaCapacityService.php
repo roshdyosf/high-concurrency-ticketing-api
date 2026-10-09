@@ -31,6 +31,11 @@ LUA;
         return (bool) Redis::setnx($this->key($tier->id), (int) $tier->total_capacity);
     }
 
+    public function overwrite(int $tierId, int $available): void
+    {
+        Redis::set($this->key($tierId), max(0, $available));
+    }
+
     public function decrement(int $tierId, int $quantity): bool
     {
         if ($quantity < 1) {
