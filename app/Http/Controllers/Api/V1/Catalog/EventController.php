@@ -18,4 +18,9 @@ class EventController extends Controller
     {
         return EventResource::collection($this->catalog->list($request->validated()));
     }
+
+    public function show(int $id): EventResource
+    {
+        return new EventResource($this->catalog->find($id));
+    }
 }
