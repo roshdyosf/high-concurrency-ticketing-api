@@ -23,8 +23,12 @@ Route::prefix('v1')->group(function () {
         ->whereNumber('id')
         ->middleware('signed', 'throttle:public')
         ->name('verification.verify');
-
+    //event catalog Routes
     Route::get('events', [EventController::class, 'index'])->middleware('throttle:public');
+    Route::get('events/{id}', [EventController::class, 'show'])
+        ->whereNumber('id')
+        ->middleware('throttle:public');
+
     // protected: auth:sanctum -> not.banned -> throttle:api
     Route::middleware(['auth:sanctum', 'not.banned', 'throttle:api'])->group(function () {
         Route::get('auth/me', [AuthController::class, 'me']);
