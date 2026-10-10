@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Account\OrganizerRequestController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
+use App\Http\Controllers\Api\V1\Catalog\EventController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -23,6 +24,7 @@ Route::prefix('v1')->group(function () {
         ->middleware('signed', 'throttle:public')
         ->name('verification.verify');
 
+    Route::get('events', [EventController::class, 'index'])->middleware('throttle:public');
     // protected: auth:sanctum -> not.banned -> throttle:api
     Route::middleware(['auth:sanctum', 'not.banned', 'throttle:api'])->group(function () {
         Route::get('auth/me', [AuthController::class, 'me']);
