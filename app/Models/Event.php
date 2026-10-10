@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property Carbon $event_date
  * @property Carbon $end_date
+ * @property EventStatus $status
  */
 class Event extends Model
 {
