@@ -28,6 +28,9 @@ Route::prefix('v1')->group(function () {
     Route::get('events/{id}', [EventController::class, 'show'])
         ->whereNumber('id')
         ->middleware('throttle:public');
+    Route::get('events/{id}/seats', [EventController::class, 'seats'])
+        ->whereNumber('id')
+        ->middleware('throttle:public');
 
     // protected: auth:sanctum -> not.banned -> throttle:api
     Route::middleware(['auth:sanctum', 'not.banned', 'throttle:api'])->group(function () {
