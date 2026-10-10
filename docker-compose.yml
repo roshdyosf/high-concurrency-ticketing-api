@@ -6,6 +6,7 @@ services:
         container_name: ticketing_app
         restart: unless-stopped
         working_dir: /var/www
+        entrypoint: ["sh", "/var/www/docker/entrypoint.sh"]
         command: php artisan serve --host=0.0.0.0 --port=8000
         environment:
             PHP_CLI_SERVER_WORKERS: 4
