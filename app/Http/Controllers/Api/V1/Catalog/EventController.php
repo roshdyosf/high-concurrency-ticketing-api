@@ -7,6 +7,7 @@ use App\Http\Requests\Catalog\ListEventsRequest;
 use App\Http\Resources\EventResource;
 use App\Services\EventCatalogService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Resources\SeatMapResource;
 
 class EventController extends Controller
 {
@@ -22,5 +23,10 @@ class EventController extends Controller
     public function show(int $id): EventResource
     {
         return new EventResource($this->catalog->find($id));
+    }
+
+    public function seats(int $id): SeatMapResource
+    {
+        return new SeatMapResource($this->catalog->seatMap($id));
     }
 }
