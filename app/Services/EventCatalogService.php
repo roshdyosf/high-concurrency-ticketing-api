@@ -6,6 +6,7 @@ use App\Enums\EventStatus;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Exceptions\EventNotFoundException;
 
 class EventCatalogService
 {
@@ -45,9 +46,22 @@ class EventCatalogService
         return $query->paginate($perPage)->withQueryString();
     }
 
+    public function find(int $id): Event
+    {
+        $event = Event::query()
+            ->with([
+                'organizer:id,name',
+                'ticketTiers' => fn ($tiers) => $tiers->orderBy('id'),
+            ])
+            ->where('status', EventStatus::Published)
+            ->find($id);
+
+        return $event ?? throw new EventNotFoundException();
+    }
     /**
      * @param  array<string, mixed>  $filters
      */
+
     private function text(array $filters, string $key): ?string
     {
         $value = $filters[$key] ?? null;
