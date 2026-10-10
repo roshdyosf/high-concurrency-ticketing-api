@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Database\Factories\SeatFactory;
 
+/**
+ * @property SeatStatus $status
+ */
+
 class Seat extends Model
 {
     /** @use HasFactory<SeatFactory> */
