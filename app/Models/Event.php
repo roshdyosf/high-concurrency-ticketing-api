@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Database\Factories\EventFactory;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property Carbon $event_date
+ * @property Carbon $end_date
+ */
 class Event extends Model
 {
     /** @use HasFactory<EventFactory> */
