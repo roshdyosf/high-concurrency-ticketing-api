@@ -24,4 +24,6 @@ return [
         'password' => env('ADMIN_PASSWORD'),
     ],
     'contiguous_max_groups' => 3,
+    'seat_bulk_max_rows' => 100,
+    'seat_bulk_max_per_row' => 100,
 ];
