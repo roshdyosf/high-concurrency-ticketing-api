@@ -29,6 +29,7 @@ class EventResource extends JsonResource
                 'id' => $this->organizer->id,
                 'name' => $this->organizer->name,
             ]),
+            'tiers' => TicketTierResource::collection($this->whenLoaded('ticketTiers')),
         ];
     }
 }
