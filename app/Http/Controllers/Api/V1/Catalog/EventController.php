@@ -8,6 +8,8 @@ use App\Http\Resources\EventResource;
 use App\Services\EventCatalogService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Resources\SeatMapResource;
+use App\Http\Requests\Catalog\ContiguousSeatsRequest;
+use App\Http\Resources\ContiguousSeatsResource;
 
 class EventController extends Controller
 {
@@ -28,5 +30,11 @@ class EventController extends Controller
     public function seats(int $id): SeatMapResource
     {
         return new SeatMapResource($this->catalog->seatMap($id));
+    }
+    public function contiguous(ContiguousSeatsRequest $request, int $id, int $tierId): ContiguousSeatsResource
+    {
+        return new ContiguousSeatsResource(
+            $this->catalog->contiguousSeats($id, $tierId, $request->integer('count'))
+        );
     }
 }
