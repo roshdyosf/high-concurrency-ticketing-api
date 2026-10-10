@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Database\Factories\TicketTierFactory;
 
+/**
+ * @property TierType $type
+ */
+
 class TicketTier extends Model
 {
     /** @use HasFactory<TicketTierFactory> */
