@@ -10,9 +10,13 @@ use App\Exceptions\EventNotFoundException;
 use App\Enums\TierType;
 use App\Models\Seat;
 use App\Models\TicketTier;
+use App\Exceptions\TierNotFoundException;
 
 class EventCatalogService
 {
+    public function __construct(private readonly ContiguousSeatFinder $finder)
+    {
+    }
     /**
      * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Event>
@@ -105,6 +109,22 @@ class EventCatalogService
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function contiguousSeats(int $eventId, int $tierId, int $count): array
+    {
+        $event = Event::query()
+            ->where('status', EventStatus::Published)
+            ->find($eventId) ?? throw new EventNotFoundException();
+
+        $tier = $event->ticketTiers()->find($tierId) ?? throw new TierNotFoundException();
+
+        return [
+            'count' => $count,
+            'groups' => $this->finder->find($tier->id, $count),
+        ];
+    }
     /**
      * @param  array<string, mixed>  $filters
      */
