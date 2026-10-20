@@ -596,3 +596,15 @@ S1 QR library (proposed `bacon/bacon-qr-code`, SVG) before I3; S2 discount-code 
 **Section / Task:** Spec 6 (Gatekeeper), 11 (Account & Invitations) / F10
 **Decision:** POST /api/v1/gatekeeper-invitations/{invitation}/accept lets the invited user accept a pending invitation (pending -> accepted).
 **Details:** Same route group as F9 (auth:sanctum, not.banned, throttle:api; no role and no verified.email); {invitation} is numeric only and bound through route-model binding (unknown id = 404 before the 403). Controller Account\GatekeeperInvitationController::accept -> GatekeeperInvitationService::accept -> GatekeeperInvitationResource (200, status accepted, event loaded). Ownership is a policy: EventGatekeeperPolicy::respond is true only when invitation.user_id equals the caller; another user's row is 403. Checks in order: (1) policy 403; (2) status must be pending and revoked_at must be null, otherwise 409 INVITATION_NOT_PENDING (covers already accepted, rejected and revoked); (3) the event must not be completed, otherwise 409 INVITATION_EVENT_COMPLETED. The transition is a compare-and-set UPDATE ... WHERE id = ? AND status = 'pending' AND revoked_at IS NULL; zero affected rows (a concurrent revoke or response) is 409 INVITATION_NOT_PENDING. The service keeps a private respond(invitation, targetStatus) shared with F11, which will only add reject(). Redis gatekeeper cache (I7) is untouched: it is filled on the first scan (cache miss). Exceptions render themselves.
+
+### Decision 80
+
+**Section / Task:** Architecture conventions (supersedes Decision 52 for Services only) / start of Phase 4
+**Decision:** Services are grouped into domain subfolders under app/Services after Phase 3 and before Phase 4 starts.
+**Details:** Folders are by domain, not by controller group, because services are shared across controllers: Inventory (seat locking, holds, GA capacity, hold-key release, contiguous finder), Catalog, Organizer, Gatekeeper, Auth, and later Booking, Payment, Refund, Admin. The namespace follows the folder (App\Services\<Domain>\<Class>). Controllers, FormRequests, Exceptions, Middleware and Resources stay flat as in Decision 52. The move is a single dedicated step done with the IDE's "Move class" refactoring, followed by pint, composer analyse and the full test suite.
+
+### Decision 81
+
+**Section / Task:** Spec 6 (Gatekeeper), 11 (Account & Invitations) / F11
+**Decision:** POST /api/v1/gatekeeper-invitations/{invitation}/reject lets the invited user reject a pending invitation (pending -> rejected).
+**Details:** Same route group, route binding, policy (EventGatekeeperPolicy::respond), checks, error codes (403, 404, 409 INVITATION_NOT_PENDING, 409 INVITATION_EVENT_COMPLETED) and compare-and-set as F10 (Decision 79); GatekeeperInvitationService::reject calls the shared private respond() with the Rejected status. Response is 200 with GatekeeperInvitationResource (status rejected, event loaded). A rejected row stays as history and does not block a new invitation from the organizer (partial unique index gk_one_active only covers pending and accepted rows).
