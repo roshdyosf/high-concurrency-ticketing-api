@@ -2,9 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\GatekeeperInvitationStatus;
+
+/**
+ * @property GatekeeperInvitationStatus $status
+ * @property Carbon $assigned_at
+ * @property Carbon|null $revoked_at
+ */
 
 class EventGatekeeper extends Model
 {
