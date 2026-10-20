@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GatekeeperInvitationResource;
 use App\Models\User;
+use App\Models\EventGatekeeper;
 use App\Services\GatekeeperInvitationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,5 +22,9 @@ class GatekeeperInvitationController extends Controller
         $user = $request->user();
 
         return GatekeeperInvitationResource::collection($this->invitations->listPending($user));
+    }
+    public function accept(EventGatekeeper $invitation): GatekeeperInvitationResource
+    {
+        return new GatekeeperInvitationResource($this->invitations->accept($invitation));
     }
 }
