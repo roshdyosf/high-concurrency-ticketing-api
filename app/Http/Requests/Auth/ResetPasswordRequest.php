@@ -4,19 +4,14 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\Concerns\HasEmailField;
 
 class ResetPasswordRequest extends FormRequest
 {
+    use HasEmailField;
     public function authorize(): bool
     {
         return true;
-    }
-
-    protected function prepareForValidation(): void
-    {
-        if (is_string($this->email)) {
-            $this->merge(['email' => strtolower(trim($this->email))]);
-        }
     }
 
     /**
@@ -26,8 +21,8 @@ class ResetPasswordRequest extends FormRequest
     {
         return [
             'token' => ['required', 'string'],
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string', Password::min(8)],
+            'email' => $this->emailRules(),
+            'password' => ['required', 'string', Password::defaults()],
         ];
     }
 }
