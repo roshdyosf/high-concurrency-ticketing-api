@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\CreateEventRequest;
 use App\Http\Resources\OrganizerEventResource;
 use App\Models\User;
+use App\Models\Event;
 use App\Services\OrganizerEventService;
 use Illuminate\Http\JsonResponse;
 
@@ -23,5 +24,9 @@ class EventController extends Controller
         return (new OrganizerEventResource($this->events->create($organizer, $request->validated())))
             ->response()
             ->setStatusCode(201);
+    }
+    public function publish(Event $event): OrganizerEventResource
+    {
+        return new OrganizerEventResource($this->events->publish($event));
     }
 }

@@ -12,4 +12,5 @@ Route::middleware(['auth:sanctum', 'not.banned', 'throttle:api', 'role:organizer
         Route::post('events', [EventController::class, 'store']);
         Route::post('events/{event}/tiers', [TierController::class, 'store'])->whereNumber('event');
         Route::post('tiers/{tier}/seats/bulk', [SeatController::class, 'bulk'])->whereNumber('tier');
+        Route::post('events/{event}/publish', [EventController::class, 'publish'])->whereNumber('event');
     });
