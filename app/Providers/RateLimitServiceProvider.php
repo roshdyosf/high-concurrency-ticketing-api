@@ -37,6 +37,13 @@ class RateLimitServiceProvider extends ServiceProvider
 
             return Limit::perMinute(60)->by($user !== null ? 'user:' . $user->getAuthIdentifier() : $this->ip($request));
         });
+
+        // L7: gatekeeper invitations - per organizer, 20/hour (decisions 56, 75)
+        RateLimiter::for('invites', function (Request $request): Limit {
+            $user = $request->user();
+
+            return Limit::perHour(20)->by($user !== null ? 'user:' . $user->getAuthIdentifier() : $this->ip($request));
+        });
     }
 
     private function ip(Request $request): string
