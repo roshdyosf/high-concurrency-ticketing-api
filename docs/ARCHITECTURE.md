@@ -111,8 +111,8 @@ A high-performance RESTful API engine for managing and booking event tickets, de
 ### 4.5 Redis Persistence & Recovery
 
 - **[v3.1]** AOF is mandatory. Two Artisan commands rebuild Redis from PostgreSQL and run on deploy and after any Redis restart:
-  - `inventory:rebuild-ga`: `available = total_capacity - SUM(quantity)` over `order_items` whose order is `paid`, or `pending` with `expires_at` in the future. Expired, failed and refunded orders do not count.
-  - `inventory:rebuild-seat-locks`: recreates `seat_hold` keys for seats of unexpired pending orders, with TTL equal to the remaining time.
+    - `inventory:rebuild-ga`: `available = total_capacity - SUM(quantity)` over `order_items` whose order is `paid`, or `pending` with `expires_at` in the future. Expired, failed and refunded orders do not count.
+    - `inventory:rebuild-seat-locks`: recreates `seat_hold` keys for seats of unexpired pending orders, with TTL equal to the remaining time.
 - AOF with `everysec` can lose up to about one second of writes, so this reconciliation is required, not optional.
 
 ## 5. Refund Workflow
@@ -554,3 +554,33 @@ Numbers match the former `PROJECT_DECISIONS_LOG_v1`, which this appendix replace
 ### C.5 Open items carried forward (S1-S8)
 
 S1 QR library (proposed `bacon/bacon-qr-code`, SVG) before I3; S2 discount-code CRUD endpoints before K1; S3 customer cancel of a pending order (`expired` + `failure_reason = customer_cancelled`); S4 row labels, bulk limit, contiguous finder result count; S5 unsuspend after unban (manual in MVP); S7 reject `event_date`/`end_date` changes (422) when a paid order exists; S8 enum values without transitions stay in the schema. C15 (admin purchase block) ships with G1; W1 (webhook) lives in the public group and is covered by a test proving `not.banned` does not apply.
+
+### Decision 74
+
+**Section / Task:** Spec 11 (Organizer), 4.4 booking window / F3
+**Decision:** POST /api/v1/organizer/events/{event}/publish moves a draft event to published.
+**Details:** Same middleware as F1 (auth:sanctum, not.banned, throttle:api, role:organizer); {event} is numeric only and bound through route-model binding. OrganizerEventService::publish authorizes with Gate::authorize('manage', $event), then runs one transaction with lockForUpdate on the event row. The event must be draft, otherwise 409 EVENT_NOT_PUBLISHABLE. At least one tier must exist (a seated tier without seats is allowed), otherwise 422 EVENT_HAS_NO_TIERS. event_date must be in the future, otherwise 422 EVENT_ALREADY_STARTED. Success returns 200 with OrganizerEventResource. Exceptions render themselves.
+
+### Decision 56
+
+**Section / Task:** Spec 12 (Rate Limiting) / L3, L4, L6, L7
+**Decision:** A route with its own dedicated limiter lives in its own route group that uses that limiter instead of throttle:api, so it is never counted twice.
+**Details:** withoutMiddleware('throttle:api') is not used because it moves the throttle after role:... and breaks the mandatory order (auth:sanctum, not.banned, throttle:<limiter>, verified.email, role:...). The dedicated group keeps that order exactly, replacing only the throttle entry. Limiters with different names have separate buckets (Laravel prefixes the key with the limiter name). Applied first to invites (L7); L3 (holds), L4 (scan) and L6 (discount) follow the same pattern in their own tasks.
+
+### Decision 75
+
+**Section / Task:** Spec 6 (Gatekeeper), 11 (Organizer), 12 / F7, L7
+**Decision:** POST /api/v1/organizer/events/{event}/gatekeepers invites a registered user by email as a pending gatekeeper.
+**Details:** Route group: auth:sanctum, not.banned, throttle:invites, role:organizer; {event} numeric only (route-model binding). Limiter "invites": 20 per hour, keyed by user id (IP fallback). Controller Organizer\GatekeeperController::store -> OrganizerGatekeeperService::invite -> GatekeeperInvitationResource (201, data: id, event_id, user_id, status, assigned_at). Body: email (required, valid, max 255), trimmed and lowercased before validation. Order of checks: Gate::authorize('manage', $event) (403); event status must be draft or published, otherwise 409 EVENT_NOT_INVITABLE (completed, cancelled, suspended are refused); email not registered -> 404 USER_NOT_FOUND (status is checked before the email lookup so a closed event never reveals whether an email exists); insert a pending event_gatekeepers row (assigned_by = organizer, assigned_at = now); a violation of the partial unique index gk_one_active -> 409 GATEKEEPER_ALREADY_INVITED. Rejected or revoked rows do not block a new invitation. An organizer may invite themselves. Exceptions render themselves.
+
+### Decision 76
+
+**Section / Task:** Spec 13 (Security Controls) / cross-cutting FormRequest conventions (Auth, Organizer)
+**Decision:** Duplicated FormRequest validation logic is extracted into one trait for email handling and the framework's Password::defaults() for passwords.
+**Details:** Trait App\Http\Requests\Concerns\HasEmailField provides prepareForValidation (trim and lowercase the email input) and emailRules() returning ['required', 'string', 'email', 'max:255']; requests that need more rules spread it (for example adding 'unique:users,email' on register). A request must not define its own prepareForValidation when it uses the trait. Password rules use Password::defaults(), defined once in AppServiceProvider::boot as Password::min(8) (no confirmation, consistent with decisions 12 and 24); requests use ['required', 'string', Password::defaults()]. No base FormRequest class and no custom Rule class are introduced (KISS). max:255 now applies to every email field, matching the users.email column. InviteGatekeeperRequest (decision 75) uses the trait.
+
+### Decision 77
+
+**Section / Task:** Spec 11 (Authentication) / C3 (login), cross-cutting FormRequest conventions
+**Decision:** LoginRequest validates the password as required|string only and does not apply Password::defaults().
+**Details:** Decision 14 requires wrong credentials to return a single fixed 422 message on the email field, so the password policy (Password::defaults(), decision 76) is enforced only on register and reset-password, never on login. This avoids leaking the password policy through login validation errors. LoginRequest still uses HasEmailField for the email field.
