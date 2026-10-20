@@ -15,4 +15,5 @@ Route::middleware(['auth:sanctum', 'not.banned', 'throttle:api'])
     ->group(function () {
         Route::get('gatekeeper-invitations', [GatekeeperInvitationController::class, 'index']);
         Route::post('gatekeeper-invitations/{invitation}/accept', [GatekeeperInvitationController::class, 'accept'])->whereNumber('invitation');
+        Route::post('gatekeeper-invitations/{invitation}/reject', [GatekeeperInvitationController::class, 'reject'])->whereNumber('invitation');
     });

@@ -27,4 +27,8 @@ class GatekeeperInvitationController extends Controller
     {
         return new GatekeeperInvitationResource($this->invitations->accept($invitation));
     }
+    public function reject(EventGatekeeper $invitation): GatekeeperInvitationResource
+    {
+        return new GatekeeperInvitationResource($this->invitations->reject($invitation));
+    }
 }

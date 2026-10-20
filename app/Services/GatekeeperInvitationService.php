@@ -35,7 +35,10 @@ class GatekeeperInvitationService
     {
         return $this->respond($invitation, GatekeeperInvitationStatus::Accepted);
     }
-
+    public function reject(EventGatekeeper $invitation): EventGatekeeper
+    {
+        return $this->respond($invitation, GatekeeperInvitationStatus::Rejected);
+    }
     private function respond(EventGatekeeper $invitation, GatekeeperInvitationStatus $target): EventGatekeeper
     {
         Gate::authorize('respond', $invitation);
