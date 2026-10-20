@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class SeatHoldService
 {
-    public function __construct(private readonly SeatLockService $locks) {}
+    public function __construct(private readonly SeatLockService $locks)
+    {
+    }
 
     /**
      * Locks the seats in Redis (all or none), flips them to held in one conditional UPDATE and runs
@@ -97,7 +99,7 @@ class SeatHoldService
             throw new InvalidSeatSelectionException('One or more seats do not exist.');
         }
 
-        $events = $seats->map(fn(Seat $seat): int => (int) $seat->ticketTier->event_id)->unique();
+        $events = $seats->map(fn (Seat $seat): int => (int) $seat->ticketTier->event_id)->unique();
 
         if ($events->count() !== 1) {
             throw new InvalidSeatSelectionException('All seats must belong to the same event.');
